@@ -1,0 +1,81 @@
+package cc;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
+import org.testng.annotations.Test;
+
+public class ProcessMemory {
+	
+	@Test
+	public void test() throws IOException
+	{
+	    String s = null;
+		String app_package = null;
+		 // run the Unix "ps -ef" command
+        // using the Runtime exec method:
+        Process p = Runtime.getRuntime().exec("adb shell dumpsys window windows");
+        	
+        // p = Runtime.getRuntime().exec("dumpsys window windows | grep -E \\\"mCurrentFocus\\ ");
+        
+        BufferedReader stdInput = new BufferedReader(new 
+             InputStreamReader(p.getInputStream()));
+
+        BufferedReader stdError = new BufferedReader(new 
+             InputStreamReader(p.getErrorStream()));
+
+        // read the output from the command
+        System.out.println("Here is the standard output of the command:\n");
+        while ((s = stdInput.readLine()) != null) {
+        	if (s.contains("mFocusedApp"))
+        	{
+        		int first = s.indexOf("u0");
+        		int last = s.indexOf("/") ;
+        		 app_package = s.substring(first + 3 , last);
+        	
+        		 
+        		 
+        	}
+        
+        	
+        	
+          
+	}
+    	System.out.println(app_package);
+    	
+        // using the Runtime exec method:
+        Process ps = Runtime.getRuntime().exec("adb shell dumpsys meminfo");
+        	
+        // p = Runtime.getRuntime().exec("dumpsys window windows | grep -E \\\"mCurrentFocus\\ ");
+        
+         stdInput = new BufferedReader(new 
+             InputStreamReader(ps.getInputStream()));
+
+         stdError = new BufferedReader(new 
+             InputStreamReader(ps.getErrorStream()));
+
+        // read the output from the command
+        System.out.println("Here is the standard output of the command:\n");
+        while ((s = stdInput.readLine()) != null) {
+        
+    		
+        	if (s.contains(app_package))
+        	{
+        		
+        		int last = s.indexOf("K:") ;
+        		 app_package = s.substring(0 , last);
+        		
+        		 
+        	}
+        
+        	
+        	
+          
+	}
+        System.out.println(app_package.trim());
+    	
+    	
+	}
+
+}
